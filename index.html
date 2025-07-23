@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário Aula <b>n8n</b> </title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="config.js"></script>
+    <style>
+        /* Reset e Configurações Globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-orange: #FF6B35;
+            --secondary-orange: #FF8E53;
+            --tertiary-orange: #FFA726;
+            --success-green: #10B981;
+            --error-red: #EF4444;
+            --text-dark: #1F2937;
+            --text-light: #6B7280;
+            --background-light: #F9FAFB;
+            --white: #FFFFFF;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 50%, var(--tertiary-orange) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* Container Principal */
+        .form-container {
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header do Formulário */
+        .form-header {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--white);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-header::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 20px;
+            background: var(--white);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-subtitle {
+            font-size: 16px;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* Conteúdo das Telas */
+        .screen {
+            display: none;
+            padding: 40px 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Tela Inicial */
+        .welcome-content {
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+        }
+
+        .welcome-description {
+            color: var(--text-light);
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        /* Campos do Formulário */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .form-label .required {
+            color: var(--error-red);
+            margin-left: 3px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .form-input.valid {
+            border-color: var(--success-green);
+            background: #F0FDF4;
+        }
+
+        .form-input.invalid {
+            border-color: var(--error-red);
+            background: #FEF2F2;
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Botões */
+        .btn {
+            width: 100%;
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-orange), var(--secondary-orange));
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--background-light);
+            color: var(--text-dark);
+            border: 2px solid #E5E7EB;
+            margin-top: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: #F3F4F6;
+            border-color: var(--primary-orange);
+        }
+
+        /* Tela de Confirmação */
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--success-green), #059669);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .success-icon::after {
+            content: '✓';
+            color: var(--white);
+            font-size: 40px;
+            font-weight: bold;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            color: var(--text-light);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .data-summary {
+            background: var(--background-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-label {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .data-value {
+            color: var(--text-light);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .form-container {
+                max-width: 100%;
+                margin: 10px;
+            }
+
+            .form-header {
+                padding: 30px 20px;
+            }
+
+            .screen {
+                padding: 30px 20px;
+            }
+
+            .form-title {
+                font-size: 24px;
+            }
+
+            .welcome-title {
+                font-size: 20px;
+            }
+        }
+
+        /* Estados de Loading */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .loading .btn {
+            position: relative;
+        }
+
+        .loading .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header">
+            <h1 class="form-title">Formulário Aula n8n</h1>
+            <p class="form-subtitle">Sistema de cadastro avançado</p>
+        </div>
+
+        <!-- Tela 1: Inicial -->
+        <div class="screen active" id="screen-1">
+            <div class="welcome-content">
+                <h2 class="welcome-title">Bem-vindo(a)!</h2>
+                <p class="welcome-description">
+                    Este é um formulário da Aula de criação de formulário com o <b>n8n</b> para coleta de suas informações.
+                    O processo é rápido e seus dados são tratados com total segurança.
+                </p>
+                <button class="btn btn-primary" onclick="nextScreen(2)">
+                    Iniciar Cadastro
+                </button>
+            </div>
+        </div>
+
+        <!-- Tela 2: Formulário -->
+        <div class="screen" id="screen-2">
+            <form id="main-form" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="nome">
+                        Nome Completo <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nome" 
+                        class="form-input" 
+                        placeholder="Digite seu nome completo"
+                        required
+                    >
+                    <div class="error-message" id="nome-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cpf">
+                        CPF <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="cpf" 
+                        class="form-input" 
+                        placeholder="000.000.000-00"
+                        maxlength="14"
+                        required
+                    >
+                    <div class="error-message" id="cpf-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="cnpj">
+                        CNPJ (Opcional)
+                    </label>
+                    <input 
+                        type="text" 
+                        id="cnpj" 
+                        class="form-input" 
+                        placeholder="00.000.000/0000-00"
+                        maxlength="18"
+                    >
+                    <div class="error-message" id="cnpj-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="telefone">
+                        Telefone <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="telefone" 
+                        class="form-input" 
+                        placeholder="(00) 00000-0000"
+                        maxlength="15"
+                        required
+                    >
+                    <div class="error-message" id="telefone-error"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">
+                        E-mail <span class="required">*</span>
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="form-input" 
+                        placeholder="seu@email.com"
+                        required
+                    >
+                    <div class="error-message" id="email-error"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submit-btn" disabled>
+                    Enviar Formulário
+                </button>
+            </form>
+        </div>
+
+        <!-- Tela 3: Confirmação -->
+        <div class="screen" id="screen-3">
+            <div class="success-icon"></div>
+            <h2 class="success-title">Cadastro Realizado!</h2>
+            <p class="success-message">
+                Seus dados foram registrados com sucesso. Confira as informações abaixo:
+            </p>
+            
+            <div class="data-summary" id="data-summary">
+                <!-- Dados serão inseridos dinamicamente -->
+            </div>
+
+            <button class="btn btn-primary" onclick="resetForm()">
+                Acessar o Site
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="nextScreen(2)">
+                Editar Campos
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dados do formulário
+        let formData = {};
+
+        // Elementos do DOM
+        const screens = document.querySelectorAll('.screen');
+        const form = document.getElementById('main-form');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Campos do formulário
+        const fields = {
+            nome: document.getElementById('nome'),
+            cpf: document.getElementById('cpf'),
+            cnpj: document.getElementById('cnpj'),
+            telefone: document.getElementById('telefone'),
+            email: document.getElementById('email')
+        };
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            setupMasks();
+            setupValidation();
+        });
+
+        /**
+         * Configura os event listeners dos campos
+         */
+        function setupEventListeners() {
+            // Event listeners para validação em tempo real
+            Object.keys(fields).forEach(fieldName => {
+                const field = fields[fieldName];
+                field.addEventListener('input', () => validateField(fieldName));
+                field.addEventListener('blur', () => validateField(fieldName));
+            });
+
+            // Event listener para o formulário
+            form.addEventListener('submit', handleFormSubmit);
+        }
+
+        /**
+         * Configura as máscaras dos campos
+         */
+        function setupMasks() {
+            // Máscara CPF
+            fields.cpf.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                e.target.value = value;
+            });
+
+            // Máscara CNPJ
+            fields.cnpj.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = value.replace(/(\d{2})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1.$2');
+                value = value.replace(/(\d{3})(\d)/, '$1/$2');
+                value = value.replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+                e.target.value = value;
+            });
+
+            // Máscara Telefone
+            fields.telefone.addEventListener('input', function(e) {
+                let value = e.target.value.replace(/\D/g, '');
+                value = value.replace(/(\d{2})(\d)/, '($1) $2');
+                value = value.replace(/(\d{5})(\d{1,4})$/, '$1-$2');
+                e.target.value = value;
+            });
+        }
+
+        /**
+         * Configura a validação do formulário
+         */
+        function setupValidation() {
+            // Validação inicial
+            updateSubmitButton();
+        }
+
+        /**
+         * Valida um campo específico
+         */
+        function validateField(fieldName) {
+            const field = fields[fieldName];
+            const value = field.value.trim();
+            const errorElement = document.getElementById(`${fieldName}-error`);
+            let isValid = true;
+            let errorMessage = '';
+
+            // Remove classes anteriores
+            field.classList.remove('valid', 'invalid');
+            errorElement.classList.remove('show');
+
+            // Validações específicas por campo
+            switch (fieldName) {
+                case 'nome':
+                    if (!value) {
+                        errorMessage = 'Nome é obrigatório';
+                        isValid = false;
+                    } else if (value.length < 3) {
+                        errorMessage = 'Nome deve ter pelo menos 3 caracteres';
+                        isValid = false;
+                    }
+                    break;
+
+                case 'cpf':
+                    if (!value) {
+                        errorMessage = 'CPF é obrigatório';
+                        isValid = false;
+                    } else if (!isValidCPF(value)) {
+                        errorMessage = 'CPF inválido';
+                        isValid = false;
+                    }
+                    break;
+
+                case 'cnpj':
+                    // CNPJ é opcional, só valida se preenchido
+                    if (value && !isValidCNPJ(value)) {
+                        errorMessage = 'CNPJ inválido';
+                        isValid = false;
+                    }
+                    break;
+
+                case 'telefone':
+                    if (!value) {
+                        errorMessage = 'Telefone é obrigatório';
+                        isValid = false;
+                    } else if (!isValidPhone(value)) {
+                        errorMessage = 'Telefone inválido';
+                        isValid = false;
+                    }
+                    break;
+
+                case 'email':
+                    if (!value) {
+                        errorMessage = 'E-mail é obrigatório';
+                        isValid = false;
+                    } else if (!isValidEmail(value)) {
+                        errorMessage = 'E-mail inválido';
+                        isValid = false;
+                    }
+                    break;
+            }
+
+            // Aplica classes e mensagens
+            if (!isValid) {
+                field.classList.add('invalid');
+                errorElement.textContent = errorMessage;
+                errorElement.classList.add('show');
+            } else if (value) {
+                field.classList.add('valid');
+            }
+
+            // Atualiza estado do botão de envio
+            updateSubmitButton();
+
+            return isValid;
+        }
+
+        /**
+         * Valida CPF
+         */
+        function isValidCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
+                return false;
+            }
+
+            let sum = 0;
+            for (let i = 0; i < 9; i++) {
+                sum += parseInt(cpf[i]) * (10 - i);
+            }
+            let digit1 = 11 - (sum % 11);
+            if (digit1 >= 10) digit1 = 0;
+
+            sum = 0;
+            for (let i = 0; i < 10; i++) {
+                sum += parseInt(cpf[i]) * (11 - i);
+            }
+            let digit2 = 11 - (sum % 11);
+            if (digit2 >= 10) digit2 = 0;
+
+            return digit1 === parseInt(cpf[9]) && digit2 === parseInt(cpf[10]);
+        }
+
+        /**
+         * Valida CNPJ
+         */
+        function isValidCNPJ(cnpj) {
+            cnpj = cnpj.replace(/\D/g, '');
+            
+            if (cnpj.length !== 14 || /^(\d)\1{13}$/.test(cnpj)) {
+                return false;
+            }
+
+            const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+            const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+            let sum = 0;
+            for (let i = 0; i < 12; i++) {
+                sum += parseInt(cnpj[i]) * weights1[i];
+            }
+            let digit1 = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+
+            sum = 0;
+            for (let i = 0; i < 13; i++) {
+                sum += parseInt(cnpj[i]) * weights2[i];
+            }
+            let digit2 = sum % 11 < 2 ? 0 : 11 - (sum % 11);
+
+            return digit1 === parseInt(cnpj[12]) && digit2 === parseInt(cnpj[13]);
+        }
+
+        /**
+         * Valida telefone
+         */
+        function isValidPhone(phone) {
+            const cleaned = phone.replace(/\D/g, '');
+            return cleaned.length === 11;
+        }
+
+        /**
+         * Valida email
+         */
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        /**
+         * Atualiza o estado do botão de envio
+         */
+        function updateSubmitButton() {
+            const requiredFields = ['nome', 'cpf', 'telefone', 'email'];
+            const isFormValid = requiredFields.every(fieldName => {
+                const field = fields[fieldName];
+                return field.value.trim() && !field.classList.contains('invalid');
+            });
+
+            submitBtn.disabled = !isFormValid;
+        }
+
+        /**
+         * Navega entre as telas
+         */
+        function nextScreen(screenNumber) {
+            screens.forEach(screen => screen.classList.remove('active'));
+            document.getElementById(`screen-${screenNumber}`).classList.add('active');
+        }
+
+        /**
+         * Manipula o envio do formulário
+         */
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            // Valida todos os campos
+            let isFormValid = true;
+            Object.keys(fields).forEach(fieldName => {
+                if (!validateField(fieldName)) {
+                    isFormValid = false;
+                }
+            });
+
+            if (!isFormValid) {
+                return;
+            }
+
+            // Coleta os dados
+            formData = {
+                nome: fields.nome.value.trim(),
+                cpf: fields.cpf.value,
+                cnpj: fields.cnpj.value || 'Não informado',
+                telefone: fields.telefone.value,
+                email: fields.email.value.trim()
+            };
+
+            // Simula loading
+            form.classList.add('loading');
+            submitBtn.textContent = 'Enviando...';
+
+            setTimeout(() => {
+                form.classList.remove('loading');
+                submitBtn.textContent = 'Enviar Formulário';
+                showSummary();
+                nextScreen(3);
+            }, 1500);
+        }
+
+        /**
+         * Exibe o resumo dos dados na tela de confirmação
+         */
+        function showSummary() {
+            const summaryContainer = document.getElementById('data-summary');
+            const labels = {
+                nome: 'Nome',
+                cpf: 'CPF',
+                cnpj: 'CNPJ',
+                telefone: 'Telefone',
+                email: 'E-mail'
+            };
+
+            summaryContainer.innerHTML = '';
+
+            Object.keys(formData).forEach(key => {
+                const item = document.createElement('div');
+                item.className = 'data-item';
+                item.innerHTML = `
+                    <span class="data-label">${labels[key]}:</span>
+                    <span class="data-value">${formData[key]}</span>
+                `;
+                summaryContainer.appendChild(item);
+            });
+        }
+
+        /**
+         * Reinicia o formulário
+         */
+        async function resetForm() {
+            // Envia webhook antes de resetar
+            try {
+                // Mostra loading no botão
+                const accessButton = event.target;
+                const originalText = accessButton.textContent;
+                accessButton.textContent = 'Enviando...';
+                accessButton.disabled = true;
+
+                // Envia os dados via webhook
+                await sendWebhook(formData);
+                
+                // Feedback de sucesso
+                accessButton.textContent = 'Enviado com sucesso!';
+                accessButton.style.background = 'linear-gradient(135deg, var(--success-green), #059669)';
+                
+                // Aguarda um pouco antes de resetar
+                setTimeout(() => {
+                    performReset();
+                }, 1500);
+                
+            } catch (error) {
+                // Em caso de erro, ainda permite continuar
+                console.error('Erro ao enviar webhook:', error);
+                
+                const accessButton = event.target;
+                accessButton.textContent = 'Erro no envio - Continuando...';
+                accessButton.style.background = 'linear-gradient(135deg, var(--error-red), #DC2626)';
+                
+                setTimeout(() => {
+                    performReset();
+                }, 2000);
+            }
+        }
+
+        /**
+         * Executa o reset do formulário
+         */
+        function performReset() {
+            // Limpa os campos
+            Object.values(fields).forEach(field => {
+                field.value = '';
+                field.classList.remove('valid', 'invalid');
+            });
+
+            // Limpa mensagens de erro
+            document.querySelectorAll('.error-message').forEach(error => {
+                error.classList.remove('show');
+            });
+
+            // Reseta dados
+            formData = {};
+
+            // Volta para a primeira tela
+            nextScreen(1);
+
+            // Atualiza botão de envio
+            updateSubmitButton();
+        }
+    </script>
+</body>
+</html>
