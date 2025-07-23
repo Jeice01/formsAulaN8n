@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulário Aula <b>n8n</b> </title>
+    <title>Formulário Aula n8n</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="config.js"></script>
     <style>
         /* Reset e Configurações Globais */
         * {
@@ -473,6 +472,37 @@
     </div>
 
     <script>
+        // Configuração do webhook
+        const WEBHOOK_CONFIG = {
+            url: 'https://n8n-workspaces-jeice-n8n.0ordg9.easypanel.host/webhook/pagina-site'
+        };
+
+        // Função para enviar dados via webhook
+        async function sendWebhook(data) {
+            try {
+                const response = await fetch(WEBHOOK_CONFIG.url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        timestamp: new Date().toISOString(),
+                        formData: data,
+                        source: 'formulario-aula-n8n'
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao enviar webhook:', error);
+                throw error;
+            }
+        }
+
         // Dados do formulário
         let formData = {};
 
